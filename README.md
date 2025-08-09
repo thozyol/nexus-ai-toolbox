@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: nexus-ai-toolbox.lovable.app/
+**URL**: [](https://nexus-ai-toolbox.lovable.app/)
 
 ## How can I edit this code?
 
