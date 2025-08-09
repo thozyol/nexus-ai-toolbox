@@ -11,7 +11,7 @@ import { pipeline, env } from '@huggingface/transformers';
 env.allowLocalModels = false;
 env.useBrowserCache = false;
 
-type Summarizer = Awaited<ReturnType<typeof pipeline>>;
+type Summarizer = (input: string, options?: Record<string, unknown>) => Promise<any>;
 
 function extractVideoId(url: string): string | null {
   try {
@@ -103,7 +103,7 @@ export const YouTubeSummarizer = () => {
     const partials: string[] = [];
 
     for (let i = 0; i < chunks.length; i++) {
-      const out = await summarizer(chunks[i], { max_length: 200, min_length: 80 });
+      const out = await summarizer(chunks[i], { max_new_tokens: 200, do_sample: false });
       const text = Array.isArray(out) ? out[0]?.summary_text || '' : (out as any).summary_text || '';
       partials.push(text);
       setProgress(40 + Math.round(((i + 1) / chunks.length) * 40));
@@ -111,7 +111,7 @@ export const YouTubeSummarizer = () => {
 
     let combined = partials.join(' ');
     if (combined.length > 1800) {
-      const out = await summarizer(combined, { max_length: 220, min_length: 100 });
+      const out = await summarizer(combined, { max_new_tokens: 220, do_sample: false });
       combined = Array.isArray(out) ? out[0]?.summary_text || '' : (out as any).summary_text || '';
     }
 

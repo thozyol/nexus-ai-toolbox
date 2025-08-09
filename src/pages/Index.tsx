@@ -46,11 +46,11 @@ const Index = () => {
         </Card>
         <Card className="glass-surface elevated-shadow">
           <CardHeader>
-            <CardTitle>Image Compressor</CardTitle>
-            <CardDescription>Resize and compress images</CardDescription>
+            <CardTitle>Image Converter</CardTitle>
+            <CardDescription>Convert between PNG, JPG, and WebP</CardDescription>
           </CardHeader>
           <CardContent>
-            <Link to="/tools/image-compressor"><Button className="w-full" variant="premium">Open</Button></Link>
+            <Link to="/tools/image-converter"><Button className="w-full" variant="premium">Open</Button></Link>
           </CardContent>
         </Card>
         <Card className="glass-surface elevated-shadow">
