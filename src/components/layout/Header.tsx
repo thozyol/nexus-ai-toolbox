@@ -2,8 +2,8 @@ import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { to: "/tools/background-removal", label: "Background Remover" },
-  { to: "/tools/crawl", label: "Web Crawler" },
+  { to: "/tools/youtube-summary", label: "YouTube Summarizer" },
+  { to: "/tools/image-compressor", label: "Image Compressor" },
   { to: "/tools/tts", label: "Text to Speech" },
   { to: "/tools/image-gen", label: "Image Gen" },
 ];

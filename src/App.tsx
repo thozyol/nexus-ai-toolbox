@@ -7,8 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { Header } from "./components/layout/Header";
-import BackgroundRemovalPage from "./pages/tools/BackgroundRemoval";
-import CrawlPage from "./pages/tools/Crawl";
+import YouTubeSummaryPage from "./pages/tools/YouTubeSummary";
+import ImageCompressorPage from "./pages/tools/ImageCompressor";
 import TTSPage from "./pages/tools/TTS";
 import ImageGenPage from "./pages/tools/ImageGen";
 
@@ -24,8 +24,8 @@ const App = () => (
           <Header />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/tools/background-removal" element={<BackgroundRemovalPage />} />
-            <Route path="/tools/crawl" element={<CrawlPage />} />
+            <Route path="/tools/youtube-summary" element={<YouTubeSummaryPage />} />
+            <Route path="/tools/image-compressor" element={<ImageCompressorPage />} />
             <Route path="/tools/tts" element={<TTSPage />} />
             <Route path="/tools/image-gen" element={<ImageGenPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
