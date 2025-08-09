@@ -2,7 +2,7 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/902f952c-29f8-4066-a54b-96a993b40545
+**URL**: nexus-ai-toolbox.lovable.app/
 
 ## How can I edit this code?
 
