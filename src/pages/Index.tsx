@@ -82,15 +82,6 @@ const Index = () => {
         </Card>
         <Card className="glass-surface elevated-shadow">
           <CardHeader>
-            <CardTitle>Palette Extractor</CardTitle>
-            <CardDescription>Get dominant colors from images</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link to="/tools/palette-extractor"><Button className="w-full" variant="premium">Open</Button></Link>
-          </CardContent>
-        </Card>
-        <Card className="glass-surface elevated-shadow">
-          <CardHeader>
             <CardTitle>Text to Speech</CardTitle>
             <CardDescription>ElevenLabs premium voices</CardDescription>
           </CardHeader>

@@ -7,7 +7,7 @@ const navItems = [
   { to: "/tools/batch-resizer", label: "Batch Resizer" },
   { to: "/tools/qr-generator", label: "QR Code" },
   { to: "/tools/watermark", label: "Watermark" },
-  { to: "/tools/palette-extractor", label: "Palette Extractor" },
+  
   { to: "/tools/tts", label: "Text to Speech" },
   { to: "/tools/image-gen", label: "Image Gen" },
 ];
