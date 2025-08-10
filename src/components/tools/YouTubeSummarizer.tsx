@@ -11,7 +11,7 @@ import { pipeline, env } from '@huggingface/transformers';
 env.allowLocalModels = false;
 env.useBrowserCache = false;
 
-type Summarizer = (input: string, options?: Record<string, unknown>) => Promise<any>;
+type Summarizer = (input: any, options?: any) => Promise<any>;
 
 function extractVideoId(url: string): string | null {
   try {
@@ -96,7 +96,7 @@ export const YouTubeSummarizer = () => {
 
   const generateSummary = useCallback(async (fullText: string) => {
     setProgress(20);
-    const summarizer: Summarizer = await pipeline('summarization', 'Xenova/distilbart-cnn-12-6', { device: 'webgpu' });
+    const summarizer = (await pipeline('summarization', 'Xenova/distilbart-cnn-12-6', { device: 'webgpu' })) as unknown as Summarizer;
     setProgress(40);
 
     const chunks = chunkText(fullText, 1800);
