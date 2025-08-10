@@ -22,18 +22,37 @@ export const RunwareImageGen = () => {
     toast({ title: 'API key saved' });
   };
 
+  const generateViaEdge = async () => {
+    const res = await fetch('/functions/v1/runware-generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ positivePrompt: prompt }),
+    });
+    if (!res.ok) throw new Error('edge-failed');
+    const data = await res.json();
+    return data as { imageURL: string };
+  };
+
   const generate = async () => {
-    if (!client) {
-      toast({ title: 'Missing API key', description: 'Add your Runware API key', variant: 'destructive' });
-      return;
-    }
     setIsLoading(true);
     try {
-      const result = await client.generateImage({ positivePrompt: prompt });
-      setImageUrl(result.imageURL);
+      // Prefer secure server key via Supabase Edge Function
+      const data = await generateViaEdge();
+      setImageUrl(data.imageURL);
       toast({ title: 'Image ready' });
-    } catch (e) {
-      toast({ title: 'Error', description: 'Failed to generate image', variant: 'destructive' });
+    } catch (edgeErr) {
+      // Fallback: use client-side key if provided
+      if (!client) {
+        toast({ title: 'Server unavailable', description: 'Add your Runware API key as a temporary fallback.', variant: 'destructive' });
+      } else {
+        try {
+          const result = await client.generateImage({ positivePrompt: prompt });
+          setImageUrl(result.imageURL);
+          toast({ title: 'Image ready (fallback)' });
+        } catch (e) {
+          toast({ title: 'Error', description: 'Failed to generate image', variant: 'destructive' });
+        }
+      }
     } finally {
       setIsLoading(false);
     }
@@ -43,7 +62,7 @@ export const RunwareImageGen = () => {
     <Card className="glass-surface elevated-shadow">
       <CardHeader>
         <CardTitle>AI Image Generator</CardTitle>
-        <CardDescription>Powered by Runware (bring your API key)</CardDescription>
+        <CardDescription>Uses secure server key (Supabase). Optional custom key below.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-[1fr_auto] gap-2">
