@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import ColorThief from 'color-thief-browser';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,11 +14,9 @@ export const PaletteExtractor = () => {
   const [palette, setPalette] = useState<string[]>([]);
   const imgRef = useRef<HTMLImageElement | null>(null);
 
-  useEffect(() => {
-    if (!imgUrl) return;
+  const extractPalette = () => {
     const img = imgRef.current;
     if (!img) return;
-    if (!img.complete) return; // wait until load handler fires
     const ct = new ColorThief();
     try {
       const pal = ct.getPalette(img, 6) as number[][];
@@ -26,7 +24,11 @@ export const PaletteExtractor = () => {
     } catch (e) {
       console.warn('Palette extraction failed', e);
     }
-  }, [imgUrl]);
+  };
+
+  const handleImageLoad = () => {
+    extractPalette();
+  };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] || null;
@@ -47,7 +49,7 @@ export const PaletteExtractor = () => {
           <div className="aspect-square rounded-lg border overflow-hidden flex items-center justify-center bg-muted/30">
             {imgUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img ref={imgRef} src={imgUrl} crossOrigin="anonymous" alt="source" className="object-contain w-full h-full" onLoad={() => setImgUrl((u) => u)} />
+              <img ref={imgRef} src={imgUrl} crossOrigin="anonymous" alt="source" className="object-contain w-full h-full" onLoad={handleImageLoad} />
             ) : (
               <span className="text-muted-foreground text-sm">Upload an image</span>
             )}
