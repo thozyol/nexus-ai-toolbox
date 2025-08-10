@@ -55,6 +55,42 @@ const Index = () => {
         </Card>
         <Card className="glass-surface elevated-shadow">
           <CardHeader>
+            <CardTitle>Batch Resizer</CardTitle>
+            <CardDescription>Resize multiple images at once</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link to="/tools/batch-resizer"><Button className="w-full" variant="premium">Open</Button></Link>
+          </CardContent>
+        </Card>
+        <Card className="glass-surface elevated-shadow">
+          <CardHeader>
+            <CardTitle>QR Code Generator</CardTitle>
+            <CardDescription>Create QR codes from text/URLs</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link to="/tools/qr-generator"><Button className="w-full" variant="premium">Open</Button></Link>
+          </CardContent>
+        </Card>
+        <Card className="glass-surface elevated-shadow">
+          <CardHeader>
+            <CardTitle>Watermark Tool</CardTitle>
+            <CardDescription>Add custom watermarks to images</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link to="/tools/watermark"><Button className="w-full" variant="premium">Open</Button></Link>
+          </CardContent>
+        </Card>
+        <Card className="glass-surface elevated-shadow">
+          <CardHeader>
+            <CardTitle>Palette Extractor</CardTitle>
+            <CardDescription>Get dominant colors from images</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link to="/tools/palette-extractor"><Button className="w-full" variant="premium">Open</Button></Link>
+          </CardContent>
+        </Card>
+        <Card className="glass-surface elevated-shadow">
+          <CardHeader>
             <CardTitle>Text to Speech</CardTitle>
             <CardDescription>ElevenLabs premium voices</CardDescription>
           </CardHeader>
