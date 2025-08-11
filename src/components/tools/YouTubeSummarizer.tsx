@@ -9,7 +9,7 @@ import { pipeline, env } from '@huggingface/transformers';
 
 // transformers.js config
 env.allowLocalModels = false;
-env.useBrowserCache = false;
+env.useBrowserCache = true;
 
 type Summarizer = (input: any, options?: any) => Promise<any>;
 
@@ -165,7 +165,14 @@ export const YouTubeSummarizer = () => {
 
   const generateSummary = useCallback(async (fullText: string) => {
     setProgress(20);
-    const summarizer = (await pipeline('summarization', 'Xenova/distilbart-cnn-12-6', { device: 'webgpu' })) as unknown as Summarizer;
+    let summarizer: Summarizer;
+    try {
+      summarizer = (await pipeline('summarization', 'Xenova/distilbart-cnn-12-6', { device: 'webgpu' })) as unknown as Summarizer;
+    } catch (err) {
+      console.warn('WebGPU summarizer init failed, falling back to WASM', err);
+      toast({ title: 'Falling back to CPU', description: 'WebGPU not available. Using slower CPU mode.' });
+      summarizer = (await pipeline('summarization', 'Xenova/distilbart-cnn-12-6', { device: 'wasm' })) as unknown as Summarizer;
+    }
     setProgress(40);
 
     const chunks = chunkText(fullText, 1800);
@@ -187,7 +194,7 @@ export const YouTubeSummarizer = () => {
     setProgress(95);
     setSummary(combined.trim());
     setProgress(100);
-  }, []);
+  }, [toast]);
 
   const onSubmit = useCallback(async () => {
     try {
