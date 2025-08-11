@@ -29,21 +29,12 @@ const Index = () => {
           </p>
           <div className="flex items-center justify-center gap-3">
             <Link to="/tools/image-gen"><Button variant="hero" size="lg">Generate Image</Button></Link>
-            <Link to="/tools/youtube-summary"><Button variant="outline" size="lg">Summarize YouTube</Button></Link>
+            
           </div>
         </div>
       </header>
 
       <section className="container mx-auto px-4 py-12 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="glass-surface elevated-shadow">
-          <CardHeader>
-            <CardTitle>YouTube Summarizer</CardTitle>
-            <CardDescription>Summarize videos via transcript</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link to="/tools/youtube-summary"><Button className="w-full" variant="premium">Open</Button></Link>
-          </CardContent>
-        </Card>
         <Card className="glass-surface elevated-shadow">
           <CardHeader>
             <CardTitle>Image Converter</CardTitle>

@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { Header } from "./components/layout/Header";
-import YouTubeSummaryPage from "./pages/tools/YouTubeSummary";
+
 import TTSPage from "./pages/tools/TTS";
 import ImageGenPage from "./pages/tools/ImageGen";
 import ImageConverterPage from "./pages/tools/ImageConverter";
@@ -28,7 +28,7 @@ const App = () => (
           <Header />
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/tools/youtube-summary" element={<YouTubeSummaryPage />} />
+            
             <Route path="/tools/image-converter" element={<ImageConverterPage />} />
             <Route path="/tools/batch-resizer" element={<BatchResizerPage />} />
             <Route path="/tools/qr-generator" element={<QRCodePage />} />
