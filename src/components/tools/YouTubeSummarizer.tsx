@@ -28,8 +28,77 @@ function extractVideoId(url: string): string | null {
 }
 
 async function fetchTranscript(videoId: string): Promise<string | null> {
+  // 1) Try to discover available caption tracks
+  try {
+    const listRes = await fetch(`https://video.google.com/timedtext?type=list&v=${videoId}`);
+    if (listRes.ok) {
+      const xmlText = await listRes.text();
+      const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+      const tracks = Array.from(xml.getElementsByTagName('track')).map((t) => ({
+        lang: t.getAttribute('lang_code') || t.getAttribute('lang') || '',
+        name: t.getAttribute('name') || '',
+        kind: t.getAttribute('kind') || '', // e.g. "asr"
+      }));
+
+      const pick =
+        tracks.find((t) => /^en(-|$)/.test(t.lang)) ||
+        tracks.find((t) => t.kind === 'asr' && /^en(-|$)/.test(t.lang)) ||
+        tracks[0];
+
+      if (pick && pick.lang) {
+        const jsonQs = new URLSearchParams({ lang: pick.lang, v: videoId, fmt: 'json3' });
+        if (pick.kind) jsonQs.set('kind', pick.kind);
+        if (pick.name) jsonQs.set('name', pick.name);
+
+        const xmlQs = new URLSearchParams({ lang: pick.lang, v: videoId });
+        if (pick.kind) xmlQs.set('kind', pick.kind);
+        if (pick.name) xmlQs.set('name', pick.name);
+
+        const urls = [
+          `https://video.google.com/timedtext?${jsonQs.toString()}`,
+          `https://video.google.com/timedtext?${xmlQs.toString()}`,
+        ];
+
+        for (const url of urls) {
+          try {
+            const res = await fetch(url);
+            if (!res.ok) continue;
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+              const data = await res.json();
+              if (data && Array.isArray(data.events)) {
+                const text = data.events
+                  .map((e: any) => (e.segs ? e.segs.map((s: any) => s.utf8).join('') : ''))
+                  .join(' ')
+                  .replace(/\s+/g, ' ');
+                if (text.trim()) return text;
+              }
+            } else {
+              const xmlText = await res.text();
+              const parser = new DOMParser();
+              const xml = parser.parseFromString(xmlText, 'text/xml');
+              const nodes = Array.from(xml.getElementsByTagName('text'));
+              const decoded = nodes
+                .map((n) => n.textContent || '')
+                .join(' ')
+                .replace(/\s+/g, ' ');
+              if (decoded.trim()) return decoded;
+            }
+          } catch (e) {
+            console.warn('Caption fetch failed for', url, e);
+            continue;
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('Track list fetch failed', e);
+  }
+
+  // 2) Fallback candidates (common English and ASR)
   const candidates = [
     `https://video.google.com/timedtext?lang=en&v=${videoId}&fmt=json3`,
+    `https://video.google.com/timedtext?lang=en&v=${videoId}&kind=asr&fmt=json3`,
     `https://video.google.com/timedtext?lang=en&v=${videoId}`,
     `https://www.youtube.com/api/timedtext?lang=en&v=${videoId}`,
   ];
@@ -44,7 +113,8 @@ async function fetchTranscript(videoId: string): Promise<string | null> {
         if (data && Array.isArray(data.events)) {
           const text = data.events
             .map((e: any) => (e.segs ? e.segs.map((s: any) => s.utf8).join('') : ''))
-            .join(' ');
+            .join(' ')
+            .replace(/\s+/g, ' ');
           if (text.trim()) return text;
         }
       } else {
@@ -59,7 +129,6 @@ async function fetchTranscript(videoId: string): Promise<string | null> {
         if (decoded.trim()) return decoded;
       }
     } catch (e) {
-      // ignore and try next
       console.warn('Transcript fetch attempt failed for', url, e);
       continue;
     }
