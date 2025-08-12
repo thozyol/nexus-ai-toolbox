@@ -10,7 +10,7 @@ export const RunwareImageGen = () => {
   const [prompt, setPrompt] = useState('A futuristic cityscape at dusk, cinematic lighting, ultra-detailed');
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const HARD_CODED_KEY = 'PASTE_YOUR_RUNWARE_API_KEY_HERE';
+  const HARD_CODED_KEY = 'gJw82xtGWI3LWBakikVxwFwI7p9ZammQ';
   const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('RUNWARE_API_KEY') || HARD_CODED_KEY);
   const saveKey = () => {
     localStorage.setItem('RUNWARE_API_KEY', apiKey);
