@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 
@@ -9,6 +10,12 @@ export const RunwareImageGen = () => {
   const [prompt, setPrompt] = useState('A futuristic cityscape at dusk, cinematic lighting, ultra-detailed');
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const HARD_CODED_KEY = 'PASTE_YOUR_RUNWARE_API_KEY_HERE';
+  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('RUNWARE_API_KEY') || HARD_CODED_KEY);
+  const saveKey = () => {
+    localStorage.setItem('RUNWARE_API_KEY', apiKey);
+    toast({ title: 'API key saved' });
+  };
 
   const generateViaEdge = async () => {
     const res = await fetch('/functions/v1/runware-generate', {
@@ -41,6 +48,17 @@ export const RunwareImageGen = () => {
         <CardDescription>Uses secure server key via Supabase. No user API key needed.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Public Runware API Key</label>
+          <div className="flex items-center gap-2">
+            <code className="text-sm break-all select-all">{HARD_CODED_KEY}</code>
+            <Button variant="outline" size="sm" onClick={() => navigator.clipboard.writeText(HARD_CODED_KEY)}>Copy</Button>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-[1fr_auto] gap-2">
+          <Input placeholder="Runware API Key" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+          <Button variant="outline" onClick={saveKey}>Save Key</Button>
+        </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Prompt</label>
           <Textarea rows={4} value={prompt} onChange={(e) => setPrompt(e.target.value)} />
