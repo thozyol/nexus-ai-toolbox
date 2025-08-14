@@ -2,10 +2,12 @@ import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
+  { to: "/tools/youtube-summary", label: "YouTube Summarizer" },
   { to: "/tools/image-converter", label: "Image Converter" },
   { to: "/tools/batch-resizer", label: "Batch Resizer" },
   { to: "/tools/qr-generator", label: "QR Code" },
   { to: "/tools/watermark", label: "Watermark" },
+  
   { to: "/tools/tts", label: "Text to Speech" },
   { to: "/tools/image-gen", label: "Image Gen" },
 ];

@@ -28,15 +28,25 @@ export const TTSForm = () => {
   };
 
   const handleSpeak = async () => {
+    if (!apiKey) {
+      toast({ title: 'Missing API key', description: 'Please add your ElevenLabs API key', variant: 'destructive' });
+      return;
+    }
     setIsLoading(true);
     try {
-      // Prefer secure server key via Supabase Edge Function
-      const res = await fetch('/functions/v1/eleven-tts', {
+      const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream?optimize_streaming_latency=0&output_format=mp3_44100_128`;
+      const res = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voiceId, model_id: 'eleven_turbo_v2_5' }),
+        headers: {
+          'xi-api-key': apiKey,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text,
+          model_id: 'eleven_turbo_v2_5',
+        }),
       });
-      if (!res.ok) throw new Error('edge-failed');
+      if (!res.ok) throw new Error('Request failed');
       const blob = await res.blob();
       const objectURL = URL.createObjectURL(blob);
       if (audioRef.current) {
@@ -44,33 +54,8 @@ export const TTSForm = () => {
         await audioRef.current.play();
       }
       toast({ title: 'Playing audio' });
-    } catch (edgeErr) {
-      // Fallback to client-side key if provided
-      if (!apiKey) {
-        toast({ title: 'Server unavailable', description: 'Add your ElevenLabs API key as a temporary fallback.', variant: 'destructive' });
-      } else {
-        try {
-          const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream?optimize_streaming_latency=0&output_format=mp3_44100_128`;
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'xi-api-key': apiKey,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ text, model_id: 'eleven_turbo_v2_5' }),
-          });
-          if (!res.ok) throw new Error('request-failed');
-          const blob = await res.blob();
-          const objectURL = URL.createObjectURL(blob);
-          if (audioRef.current) {
-            audioRef.current.src = objectURL;
-            await audioRef.current.play();
-          }
-          toast({ title: 'Playing audio (fallback)' });
-        } catch (e) {
-          toast({ title: 'Error', description: 'Failed to synthesize speech', variant: 'destructive' });
-        }
-      }
+    } catch (e) {
+      toast({ title: 'Error', description: 'Failed to synthesize speech', variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +65,7 @@ export const TTSForm = () => {
     <Card className="glass-surface elevated-shadow">
       <CardHeader>
         <CardTitle>Text to Speech</CardTitle>
-        <CardDescription>Uses secure server key (Supabase). Optional custom key.</CardDescription>
+        <CardDescription>Powered by ElevenLabs (bring your API key)</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid md:grid-cols-[1fr_auto] gap-2">
