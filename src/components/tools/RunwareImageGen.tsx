@@ -18,9 +18,12 @@ export const RunwareImageGen = () => {
   };
 
   const generateViaEdge = async () => {
-    const res = await fetch('/functions/v1/runware-generate', {
+    const res = await fetch('https://dxfjnlbdctftcwxwdxzq.supabase.co/functions/v1/runware-generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4ZmpubGJkY3RmdGN3eHdkeHpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5NzQ3MjMsImV4cCI6MjA0OTU1MDcyM30.IFmHkCX7zSZDDSIc7a7C2fMl6Dc3P8RPqSfBXNGTGhE'
+      },
       body: JSON.stringify({ positivePrompt: prompt }),
     });
     if (!res.ok) throw new Error('edge-failed');
